@@ -1,0 +1,17 @@
+﻿
+@{
+
+    Layout = "_Layout";
+
+    ViewData["Title"] = "...Index Title...";
+
+}
+<table border="1">
+    <tr><td>ID</td><td><input type="text" id="txtId" value="0" size="10" maxlength="50" readonly="readonly" /></td></tr>
+    <tr><td>NAME</td><td><input type="text" id="txtName" value="" size="50" maxlength="50" /></td></tr>
+    <tr><td>AGE</td><td><input type="text" id="txtAge" value="" size="3" maxlength="2" class="positive" /></td></tr>
+    <tr><td>ADDRESS</td><td><input type="text" id="txtAddr" value="" size="50" maxlength="50" /></td></tr>
+    <tr><td><input type="button" value="ADD NEW USER" id="btnAdd" /></td><td><input type="button" value="CLEAR FIELDS" id="btnCle" /><input type="button" value="DELETE USER" id="btnDel" /></td></tr>
+</table>
+<p>CLICK ON ID FIELD TO EDIT/DELETE USER...</p><p><input type="text" size="10" maxlength="50" id="txtSearch" /><input type="button" id="btnSea" value="SEARCH NAME" /></p>
+<div id="ret_div"></div>

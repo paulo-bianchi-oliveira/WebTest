@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="~/js/jquery.numeric.js"></script>
+
+    <script type="text/javascript">
+
+        function GetAll() {//list all users...
+            
+            $.getJSON("api/values", function (data) {
+
+                var sHtm = '<table border="1">';
+                sHtm += '<tr><td>ID</td><td>NAME</td><td>AGE</td><td>ADDRESS</td></tr>';// / 
+                $.each(data, function (key, val) {
+                    sHtm += '<tr><td><a href="#" onclick="EditUser(' + val.id + ');">' + val.id + '</a></td><td>' + val.name + '</td><td>' + val.age + '</td><td>' + val.address + '</td></tr>'; 
+                });
+
+                sHtm += '</table>';
+                $('#ret_div').html(sHtm);
+
+            });
+        }
+
+        function EditUser(P_ID) {
+
+            $('#btnAdd').val('SAVE CHANGES');
+            $('#btnDel').show();            
+
+
+            //alert(P_ID);
+            $.getJSON("api/values/" + P_ID, function (data) {
+
+                $('#txtId').val(data.id); $('#txtName').val(data.name); $('#txtAge').val(data.age); $('#txtAddr').val(data.address); 
+
+            });
+
+        }
+
+        function DelUser(P_ID)
+        {
+            $.ajax({
+                type: 'DELETE',
+                url: '/api/values/' + P_ID,
+                success: function (data) {
+                    ClearFields();
+                    GetAll();
+                },
+                contentType: "application/json",
+                dataType: 'json'
+            });
+        }
+        
+
+        function AddEdtUser(P_DATA) {
+            
+            $.ajax({
+                type: 'POST',
+                url: '/api/values',
+                data: JSON.stringify(P_DATA),
+                success: function (data) {
+                    ClearFields();
+                    GetAll();
+                },
+                contentType: "application/json",
+                dataType: 'json'
+            });
+
+        }
+
+        function ClearFields() {
+
+            $('#btnDel').hide(); $('#btnAdd').val('ADD NEW USER');
+
+            $('#txtId').val('0'); $('#txtName').val(''); $('#txtAge').val(''); $('#txtAddr').val(''); 
+        }
+
+        $(function () {//start page/setup...
+
+            $.ajaxSetup({ cache: false });
+
+            $('#btnDel').hide();
+
+            $(".positive").numeric({ negative: false }, function () { alert("No negative values"); this.value = ""; this.focus(); });
+
+            $(".integer").numeric(false, function () { alert("Integers only"); this.value = ""; this.focus(); });
+
+            $("#btnSea").click(function () {
+
+                alert('clicou buscar...');
+
+            });
+
+            
+
+            $("#btnDel").click(function () {
+
+                if (confirm('Do you really want to delete this user?')) {
+
+                    DelUser($('#txtId').val());
+
+                }
+
+            });
+
+            $("#btnAdd").click(function () {
+
+                var bOK = true;
+
+                if ($('#txtName').val().trim() == '') {
+                    alert('Name field cannot be empty!');
+                    bOK = false;
+                    $('#txtName').focus();
+                }
+
+                if ($('#txtAge').val().trim() == '') {
+                    alert('Age field cannot be empty!');
+                    $('#txtAge').focus();
+                    bOK = false;
+                }
+
+                if (bOK) {
+
+                    var data = { ID: $('#txtId').val(), Name: '' + $('#txtName').val() + '', Age: $('#txtAge').val(), Address: '' + $('#txtAddr').val() + '' };
+
+                    AddEdtUser(data);
+                }
+                
+                
+            });
+            //----------------
+            $("#btnCle").click(function () {
+                
+                ClearFields();
+            });
+            //----------------
+            GetAll();
+
+        });
+    </script>
+</head>
+<body>
+    
+    <div id="main">
+        <!--VEIO do outro -> @ViewData["Title"]-->
+        @RenderBody()
+    </div>
+    <footer>
+        <br /><br /Copyright - @DateTime.Now.Year
+    </footer>
+</body>
+</html>
